@@ -1,5 +1,5 @@
-import React from 'react'
-import { Image, View, Text, TextInput, StyleSheet, ToastAndroid, TouchableOpacity } from 'react-native'
+import React, {useEffect}from 'react'
+import { Image, View, Text, TextInput, StyleSheet, ToastAndroid, TouchableOpacity, ScrollView } from 'react-native'
 import { RounderButton } from '../../components/RounderButton';
 import useViewModel from './ViewModel';
 import { CustomTextInput } from '../../components/CustomTextInput';
@@ -8,8 +8,16 @@ import styles from './Styles';
 export const RegisterScreen = () => {
 
 
-  const { name, lastname, email, phone, password, confirmPassword, onChange, register } = useViewModel();
+  const { name, lastname, email, phone, password, confirmPassword, errorMessage, onChange, register} = useViewModel();
 
+
+  useEffect(() => {
+    if (errorMessage != ''){
+      ToastAndroid.show(errorMessage, ToastAndroid.LONG);
+    }
+   
+  }, [errorMessage])
+  
     return (
         <View style={styles.container}>
          <Image
@@ -27,6 +35,9 @@ export const RegisterScreen = () => {
     
         <View style={styles.form}>
          
+         <ScrollView>
+
+
          <Text style={styles.formText}>Registrarse</Text>
 
          <CustomTextInput 
@@ -95,6 +106,8 @@ export const RegisterScreen = () => {
            <RounderButton text='CONFIRMAR' onPress={() => register()}/>
     
          </View>
+
+         </ScrollView>
            
          
     

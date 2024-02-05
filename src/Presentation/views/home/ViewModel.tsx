@@ -1,5 +1,8 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { LoginAuthUseCase } from '../../../Domain/useCases/auth/LoginAuth';
+import { SaveUserLocalUseCase } from '../../../Domain/useCases/UserLocal/SaveUserLocal';
+import { GetUserLocalUseCase } from '../../../Domain/useCases/UserLocal/GetUserLocal';
+import { useUserLocal } from '../../hooks/useUserLocal';
 
  const HomeViewModel = () => {
     const[errorMessage, setErrorMessage] = useState('');
@@ -7,6 +10,10 @@ import { LoginAuthUseCase } from '../../../Domain/useCases/auth/LoginAuth';
        email: '',
        password: '',
     });
+
+    const {user, getUserSession}= useUserLocal();
+    console.log('USUARIO DE SESION:' + JSON.stringify(user));
+    
 
     const onChange = (property: string, value: any) =>{
         setValues({ ...values, [property]: value });
@@ -18,6 +25,10 @@ import { LoginAuthUseCase } from '../../../Domain/useCases/auth/LoginAuth';
         console.log('RESPONSE:' + JSON.stringify(response));
         if (!response.success){
             setErrorMessage(response.message);
+        }
+        else{
+            await SaveUserLocalUseCase(response.data);
+            getUserSession();
         }
     }
     }
@@ -42,6 +53,7 @@ import { LoginAuthUseCase } from '../../../Domain/useCases/auth/LoginAuth';
   
     return {
         ...values,
+        user,
         onChange,
         login,
         errorMessage
